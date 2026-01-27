@@ -76,15 +76,27 @@ public class ChatNetwork : NetworkBehaviour
     {
         Image img = Instantiate(_messagePanel, GameManager.Instance.Container, false);
 
+        if (GameManager.Instance.Container.childCount >= 2)
+        {
+            Image lastImg = GameManager.Instance.Container.GetChild(GameManager.Instance.Container.childCount - 2).GetComponent<Image>();
+            Color color = lastImg.color;
+            color.a = 0.3f;
+            lastImg.color = color;
+            lastImg.transform.localScale = Vector3.one * 0.9f;
+        }
+
         TextMeshProUGUI name = img.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI text = img.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
 
         name.text = $"Player {senderClientId}";
         text.text = message;
 
-        ResizeContainerRpc(img.rectTransform.rect.size.y/2 + 27.5f);
+        ResizeContainerRpc(img.rectTransform.rect.size.y/2 + 30f);
 
+        GameManager.Instance.ScrollRect.verticalNormalizedPosition = 0;
         GameManager.Instance.Bar.value = 0;
+
+        Canvas.ForceUpdateCanvases();
 
         ResetInput();
     }

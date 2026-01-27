@@ -1165,6 +1165,7 @@ MonoBehaviour:
   <Container>k__BackingField: {fileID: 251352002}
   <Input>k__BackingField: {fileID: 10450814}
   <Bar>k__BackingField: {fileID: 508471674}
+  <ScrollRect>k__BackingField: {fileID: 177996215}
 --- !u!1 &836337076
 GameObject:
   m_ObjectHideFlags: 0
@@ -1734,7 +1735,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 1
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0

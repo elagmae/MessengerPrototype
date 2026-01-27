@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     public TMP_InputField Input { get; set; }
     [field : SerializeField]
     public Scrollbar Bar { get; set; }
+    [field: SerializeField]
+    public ScrollRect ScrollRect { get; set; }
 
     private void Awake()
     {

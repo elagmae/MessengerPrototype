@@ -9,8 +9,7 @@ public class ChatManager : NetworkManager
     {
         GUILayout.BeginArea(new Rect(100, 100, 500, 500));
 
-        if (!IsClient && !IsServer) StartButtons();
-        else StatusLabels();
+        if (!IsClient && !IsServer && !IsHost) StartButtons();
 
         GUILayout.EndArea();
     }
