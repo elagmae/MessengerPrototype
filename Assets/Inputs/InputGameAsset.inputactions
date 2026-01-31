@@ -1,0 +1,47 @@
+{
+    "version": 1,
+    "name": "InputGameAsset",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "a97c0753-bec0-4314-b023-9f3ff516836d",
+            "actions": [
+                {
+                    "name": "SendMessage",
+                    "type": "Button",
+                    "id": "46baf09b-e822-4a59-b87b-7b70f962fef1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0d003b35-cbb9-40a3-a058-ffd3d7ff3cec",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "SendMessage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Keyboard",
+            "bindingGroup": "Keyboard",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

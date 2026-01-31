@@ -27,7 +27,7 @@ public class ChatManager : NetworkManager
 
         // WSS Conection Type => Sets connection type to wss (web socket) : should align with NetworkManager's web socket checkbox.
 
-        if (GUILayout.Button("Host", button)) _relay.CreateRelay(2, "wss");
-        if (GUILayout.Button("Client", button)) _relay.JoinRelay(GameManager.Instance.CodeField.text.Trim(), "wss");
+        if (GUILayout.Button("Host", button)) _relay.CreateRelay(2);
+        if (GUILayout.Button("Client", button)) _relay.JoinRelay(GameManager.Instance.CodeField);
     }
 }

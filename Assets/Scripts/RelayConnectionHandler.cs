@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
@@ -7,56 +8,59 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
-using UnityEngine; 
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RelayConnectionHandler : MonoBehaviour
 {
-    public event Action<string> OnHosting;
-    public event Action<string> OnJoining;
+    public string JoinCode { get; private set; }
+    private MessageDisplayHandler _messageDisplay;
 
     private async void Start()
     {
         await UnityServices.InitializeAsync();
         if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        TryGetComponent(out _messageDisplay);
     }
 
-    public async void CreateRelay(int maxConnections, string connectionType)
+    public async void CreateRelay(int maxConnections)
     {
         try
         {
             await Task.Yield();
 
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
-            GameManager.Instance.CodeDisplay.text = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+            JoinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
-            RelayServerData relayServerData = allocation.ToRelayServerData(connectionType);
+            RelayServerData relayServerData = allocation.ToRelayServerData("wss");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-
             NetworkManager.Singleton.StartHost();
 
-            OnHosting?.Invoke(GameManager.Instance.CodeDisplay.text);
+            NetworkManager.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
 
-        catch (System.Exception e)
+        catch (Exception e)
         {
             Debug.LogException(e);
         }
     }
 
-    public async void JoinRelay(string joinCode, string connectionType)
+    public async void JoinRelay(TMP_InputField joinCodeInput)
     {
         try
         {
             await Task.Yield();
 
-            JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-            RelayServerData relayServerData = joinAllocation.ToRelayServerData(connectionType);
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+            JoinCode = joinCodeInput.text.Trim();
 
+            JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(JoinCode);
+            RelayServerData relayServerData = joinAllocation.ToRelayServerData("wss");
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartClient();
         }
 
-        catch (System.Exception e)
+        catch (Exception e)
         {
             Debug.LogException(e);
         }

@@ -10,7 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4334258868282412231}
   - component: {fileID: 4697396369339651209}
-  - component: {fileID: 4442882725280084075}
+  - component: {fileID: -642953132593166178}
+  - component: {fileID: -5970564916814407889}
+  - component: {fileID: 4230042151892950919}
+  - component: {fileID: -7527075751671453342}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -46,7 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
   GlobalObjectIdHash: 778425013
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 778425013
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 1
@@ -58,7 +61,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 1
---- !u!114 &4442882725280084075
+--- !u!114 &-642953132593166178
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -67,8 +70,63 @@ MonoBehaviour:
   m_GameObject: {fileID: 7979133546513069730}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0392bfc5223f0d646bf1795b8a4cce21, type: 3}
+  m_Script: {fileID: 11500000, guid: 70ea86d8fa721964c83c1340a94ce72a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChatNetwork
+  m_EditorClassIdentifier: Assembly-CSharp::MessageSendingBehaviour
   ShowTopMostFoldoutHeaderGroup: 1
-  _messagePanel: {fileID: 7248856413258001366, guid: 31dccc945c9204442855b5b9ed77819d, type: 3}
+  _receiverPrefab: {fileID: 760900215349711047, guid: 31dccc945c9204442855b5b9ed77819d, type: 3}
+--- !u!114 &-5970564916814407889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7979133546513069730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d92519de0d63df445b5ea67124901263, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MessageShowerBehaviour
+  _receiverPrefab: {fileID: 760900215349711047, guid: 31dccc945c9204442855b5b9ed77819d, type: 3}
+--- !u!114 &4230042151892950919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7979133546513069730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67249b1ca57c33841b9a72c1a9ae5118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
+--- !u!114 &-7527075751671453342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7979133546513069730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+  m_Actions: {fileID: -944628639613478452, guid: 94d0a150789d8014999f466adbf72f22, type: 3}
+  m_NotificationBehavior: 3
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: Keyboard
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
