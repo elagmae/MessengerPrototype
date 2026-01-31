@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ChatManager : NetworkManager
 {
-    private RelayConnection _relay;
+    private RelayConnectionHandler _relay;
 
     private void Awake() => TryGetComponent(out _relay);
 
@@ -25,8 +25,9 @@ public class ChatManager : NetworkManager
             fontSize = 30
         };
 
-        if (GUILayout.Button("Host", button)) _relay.CreateRelay(2);
+        // WSS Conection Type => Sets connection type to wss (web socket) : should align with NetworkManager's web socket checkbox.
 
-        if (GUILayout.Button("Client", button)) _relay.JoinRelay(GameManager.Instance.CodeField.text.Trim());
+        if (GUILayout.Button("Host", button)) _relay.CreateRelay(2, "wss");
+        if (GUILayout.Button("Client", button)) _relay.JoinRelay(GameManager.Instance.CodeField.text.Trim(), "wss");
     }
 }
