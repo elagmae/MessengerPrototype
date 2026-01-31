@@ -1,18 +1,13 @@
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MessageSendingBehaviour : NetworkBehaviour
 {
     [SerializeField] private MessageReceiveBehaviour _receiverPrefab;
-    private MessageShowerBehaviour _messageShower;
     private TMP_InputField _messageField;
     public ScrollRect ScrollRect { get;private set; }
-
-    private void Awake() => TryGetComponent(out _messageShower);
 
     public override void OnNetworkSpawn()
     {
@@ -23,6 +18,7 @@ public class MessageSendingBehaviour : NetworkBehaviour
     private void OnSceneLoaded(SceneEvent sceneEvent)
     {
         if (sceneEvent.SceneEventType != SceneEventType.SynchronizeComplete && sceneEvent.Scene.name != "Game") return;
+        if (ScrollRect != null && _messageField != null) return;
 
         ScrollRect = FindFirstObjectByType<ScrollRect>();
         _messageField = FindFirstObjectByType<TMP_InputField>();
@@ -40,17 +36,9 @@ public class MessageSendingBehaviour : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Return)) SendMessageToServerRpc(_messageField.text);
     }
 
-    private void SendMessage(InputAction.CallbackContext ctx)
-    {
-        if (!ctx.performed || SceneManager.GetActiveScene().name != "Game") return;
-        print("sending...");
-        SendMessageToServerRpc(_messageField.text);
-    }
-
     [ServerRpc]
     private void SendMessageToServerRpc(string message, ServerRpcParams rpcParams = default)
     {
-        print("to server...");
         ulong senderClientId = rpcParams.Receive.SenderClientId;
         ReceiveMessageClientRpc(message, senderClientId);
     }
@@ -58,13 +46,22 @@ public class MessageSendingBehaviour : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     public void ReceiveMessageClientRpc(string message, ulong senderClientId)
     {
-        print("to client..." + senderClientId);
+        Canvas.ForceUpdateCanvases();
 
         MessageReceiveBehaviour lastMessage = Instantiate(_receiverPrefab, ScrollRect.content);
+
+        ScrollRect.content.SetSizeWithCurrentAnchors
+        (
+            RectTransform.Axis.Vertical, 
+            (lastMessage.Image.rectTransform.rect.size.y + 50) * (ScrollRect.content.childCount + 0.2f)
+        );
+
+        ScrollRect.verticalNormalizedPosition = 0;
+
         lastMessage.MessageDisplay.text = message;
         lastMessage.PlayerDisplay.text = $"Player {senderClientId}";
 
-        ResetInput();
+        if (IsOwner) ResetInput();
     }
 
 }
