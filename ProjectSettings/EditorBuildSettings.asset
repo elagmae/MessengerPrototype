@@ -8,6 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/NetcodeDemo.unity
     guid: 04a64db0d66866b42b0d4e5668efb7c7
+  - enabled: 1
+    path: Assets/Scenes/Messenger.unity
+    guid: 239d3f325db4fec4ea8d0fcd774d2624
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

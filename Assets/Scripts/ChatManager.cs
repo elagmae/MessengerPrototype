@@ -1,10 +1,12 @@
-using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ChatManager : NetworkManager
 {
+    private RelayConnection _relay;
+
+    private void Awake() => TryGetComponent(out _relay);
+
     private void OnGUI()
     {
         GUILayout.BeginArea(new Rect(100, 100, 500, 500));
@@ -23,15 +25,8 @@ public class ChatManager : NetworkManager
             fontSize = 30
         };
 
-        if (GUILayout.Button("Host", button)) NetworkManager.Singleton.StartHost();
-        if (GUILayout.Button("Client", button)) NetworkManager.Singleton.StartClient();
-    }
+        if (GUILayout.Button("Host", button)) _relay.CreateRelay(2);
 
-    private void StatusLabels()
-    {
-        var mode = NetworkManager.Singleton.IsHost ? "Host" : NetworkManager.Singleton.IsServer ? "Server" : "Client";
-
-        GUILayout.Label("Transport: " + NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name);
-        GUILayout.Label("Mode: " + mode);
+        if (GUILayout.Button("Client", button)) _relay.JoinRelay(GameManager.Instance.CodeField.text.Trim());
     }
 }

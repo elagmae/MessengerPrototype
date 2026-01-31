@@ -122,18 +122,19 @@ public class ChatNetwork : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void StopNetworkRpc()
     {
-        RpcParams rpcParams = default;
-        NetworkManager.Singleton.DisconnectClient(rpcParams.Receive.SenderClientId);
-
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
         {
+            RpcParams rpcParams = default;
+            NetworkManager.Singleton.DisconnectClient(rpcParams.Receive.SenderClientId);
+
             _networkStopped = true;
             NetworkManager.Singleton.Shutdown();
         }
     }
 
-    private void OnApplicationQuit()
+    public override void OnDestroy()
     {
         StopNetworkRpc();
+        base.OnDestroy();
     }
 }
