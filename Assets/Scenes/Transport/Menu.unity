@@ -1604,6 +1604,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 265961432}
   m_CullTransparentMesh: 1
+--- !u!1 &287470821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 287470822}
+  - component: {fileID: 287470823}
+  m_Layer: 0
+  m_Name: HostGuess
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &287470822
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287470821}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &287470823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287470821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d68f7af0c00d7484899d06a25031b381, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpdateGuessColors
+  _guessContainer: {fileID: 1878462593}
 --- !u!1 &288583160
 GameObject:
   m_ObjectHideFlags: 0
@@ -4572,69 +4617,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 934c6ab6ebc11c248b5fcc9c2cfae09c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelayClient
+  _guessColors: {fileID: 1363511968}
   _clientUI: {fileID: 1255512110}
   <GuessPanel>k__BackingField: {fileID: 665103843}
-  _lines:
-  - Images:
-    - {fileID: 1646650745}
-    - {fileID: 1057448159}
-    - {fileID: 1454135769}
-    - {fileID: 128984120}
-    - {fileID: 335388904}
-    Tmps:
-    - {fileID: 1458797729}
-    - {fileID: 957379167}
-    - {fileID: 673719974}
-    - {fileID: 1602620095}
-    - {fileID: 1121828179}
-  - Images:
-    - {fileID: 1041127213}
-    - {fileID: 1974090885}
-    - {fileID: 1393960318}
-    - {fileID: 1115527470}
-    - {fileID: 2031186074}
-    Tmps:
-    - {fileID: 1557242890}
-    - {fileID: 1529899570}
-    - {fileID: 569443436}
-    - {fileID: 246465479}
-    - {fileID: 620294885}
-  - Images:
-    - {fileID: 1640157831}
-    - {fileID: 1279716080}
-    - {fileID: 423802196}
-    - {fileID: 557874114}
-    - {fileID: 1065441006}
-    Tmps:
-    - {fileID: 1831207512}
-    - {fileID: 1861878412}
-    - {fileID: 750886930}
-    - {fileID: 1859330957}
-    - {fileID: 559254317}
-  - Images:
-    - {fileID: 931975672}
-    - {fileID: 1073375845}
-    - {fileID: 63186799}
-    - {fileID: 2127733982}
-    - {fileID: 265961434}
-    Tmps:
-    - {fileID: 357655424}
-    - {fileID: 1424347241}
-    - {fileID: 1572796415}
-    - {fileID: 532224501}
-    - {fileID: 567301098}
-  - Images:
-    - {fileID: 794289302}
-    - {fileID: 2113566006}
-    - {fileID: 440769608}
-    - {fileID: 2116419066}
-    - {fileID: 1175438165}
-    Tmps:
-    - {fileID: 424078424}
-    - {fileID: 752977775}
-    - {fileID: 577291781}
-    - {fileID: 948032123}
-    - {fileID: 389637388}
 --- !u!114 &570737834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4950,6 +4935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelayServer
   _hostUi: {fileID: 370100447}
+  _guessColors: {fileID: 287470823}
   joinCode: {fileID: 1443019545}
 --- !u!4 &600485680
 Transform:
@@ -9619,6 +9605,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346731160}
   m_CullTransparentMesh: 1
+--- !u!1 &1363511967
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1363511969}
+  - component: {fileID: 1363511968}
+  m_Layer: 0
+  m_Name: ClientGuess
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1363511968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363511967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d68f7af0c00d7484899d06a25031b381, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpdateGuessColors
+  _guessContainer: {fileID: 1553494962}
+--- !u!4 &1363511969
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363511967}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1380869772
 GameObject:
   m_ObjectHideFlags: 0
@@ -16751,3 +16782,5 @@ SceneRoots:
   - {fileID: 2082379190}
   - {fileID: 570737832}
   - {fileID: 600485680}
+  - {fileID: 287470822}
+  - {fileID: 1363511969}

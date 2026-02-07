@@ -10,32 +10,23 @@ using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class RelayClient : MonoBehaviour
 {
     [SerializeField]
+    private UpdateGuessColors _guessColors;
+
+    [SerializeField]
     private Canvas _clientUI;
     [field:SerializeField]
     public GameObject GuessPanel { get; private set; }
-    [SerializeField]
-    private List<Word> _lines = new();
 
     private NetworkDriver driver;
     private NetworkConnection connection;
-    private AsyncOperation _loadOperation = new();
 
     private bool isRunning = false;
     public bool EndGame { get; private set; } = false;
     private int _currentTry = -1;
-
-    [Serializable]
-    public struct Word
-    {
-        public List<Image> Images;
-        public List<TextMeshProUGUI> Tmps;
-    }
 
     async void Awake()
     {
@@ -120,7 +111,7 @@ public class RelayClient : MonoBehaviour
                 {
                     string colors = stream.ReadFixedString128().ToString();
                     int line = stream.ReadInt();
-                    UpdateColors(colors);
+                    _guessColors.UpdateColors(colors, _currentTry);
                     return;
 
                 }
@@ -130,7 +121,7 @@ public class RelayClient : MonoBehaviour
                     string wonMsg = stream.ReadFixedString128().ToString();
                     if (wonMsg == "Won")
                     {
-                        UpdateColors("GGGGG");
+                        _guessColors.UpdateColors("GGGGG", _currentTry);
                         Debug.Log("Won! ");
                         EndGame = true;
                     }
@@ -158,7 +149,7 @@ public class RelayClient : MonoBehaviour
 
         for (int i = 0; i < message.Length; i++)
         {
-            _lines[_currentTry].Tmps[i].text = message[i].ToString();
+            _guessColors.Lines[_currentTry].Tmps[i].text = message[i].ToString();
         }
 
         driver.EndSend(writer);
@@ -170,31 +161,5 @@ public class RelayClient : MonoBehaviour
     {
         if (driver.IsCreated)
             driver.Dispose();
-    }
-
-    private void UpdateColors(string colors)
-    {
-        print(colors + " on line " + _currentTry);
-        for (int i = 0; i < colors.Length; i++)
-        {
-            Color color = Color.white;
-            switch(colors[i])
-            {
-                case 'G':
-                    color = Color.green;
-                    break;
-
-                case 'Y':
-                    color = Color.yellow;
-                    break;
-
-                case 'R':
-                    color = Color.red;
-                    break;
-            }
-
-            _lines[_currentTry].Images[i].color = color;
-        }
-
     }
 }

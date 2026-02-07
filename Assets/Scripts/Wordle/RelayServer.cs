@@ -15,6 +15,8 @@ public class RelayServer : MonoBehaviour
 {
     [SerializeField]
     private Canvas _hostUi;
+    [SerializeField]
+    private UpdateGuessColors _guessColors;
 
     private NetworkDriver driver;
     private NativeList<NetworkConnection> connections;
@@ -111,7 +113,6 @@ public class RelayServer : MonoBehaviour
         while ((conn = driver.Accept()) != default)
         {
             connections.Add(conn);
-            Debug.Log("Client connected !");
         }
     }
 
@@ -131,14 +132,12 @@ public class RelayServer : MonoBehaviour
                     if (msgType == 1)
                     {
                         FixedString128Bytes msg = stream.ReadFixedString128();
-                        Debug.Log("SERVER received: " + msg);
                         ShowColors(msg.ToString());
                         return;
                     }
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
-                    Debug.Log("Client disconnected.");
                     connections[i] = default;
                 }
             }
@@ -161,8 +160,6 @@ public class RelayServer : MonoBehaviour
                 writer.WriteFixedString128("Won");
             }
 
-            print(word + " -- " + _wordToGuess);
-
             string colors = "";
             foreach (char c in word)
             {
@@ -171,12 +168,18 @@ public class RelayServer : MonoBehaviour
                 else if (!_wordToGuess.Contains(c)) colors += "R";
             }
 
+            for (int j = 0; j < word.Length;j++)
+            {
+                _guessColors.Lines[_currentTry].Tmps[j].text = word[j].ToString();
+            }
+
             writer.WriteByte(2);
             writer.WriteFixedString128(colors);
+
             writer.WriteByte(3);
             writer.WriteInt(_currentTry);
 
-            print(colors);
+            _guessColors.UpdateColors(colors, _currentTry);
 
             driver.EndSend(writer);
         }
