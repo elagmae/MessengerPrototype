@@ -9,19 +9,15 @@ using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class RelayConnectionHandler : MonoBehaviour
 {
     public string JoinCode { get; private set; }
-    private MessageDisplayHandler _messageDisplay;
 
     private async void Start()
     {
         await UnityServices.InitializeAsync();
         if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
-        TryGetComponent(out _messageDisplay);
     }
 
     public async void CreateRelay(int maxConnections)
