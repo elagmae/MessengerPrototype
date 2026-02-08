@@ -18,10 +18,10 @@ public class RelayServer : MonoBehaviour
 
     public NetworkDriver Driver { get; set; }
     public NativeList<NetworkConnection> Connections => connections;
+    public string WordToGuess { get; set; }
 
     private NativeList<NetworkConnection> connections;
     private GetColorsHandler _colorsHandler;
-    private string _wordToGuess;
     private bool isRunning = false;
 
     async void Awake()
@@ -71,17 +71,7 @@ public class RelayServer : MonoBehaviour
                 connections.RemoveAtSwapBack(i);
                 i--;
             }
-        }
 
-        NetworkConnection conn;
-        while ((conn = Driver.Accept()) != default)
-        {
-            connections.Add(conn);
-            _waitPanel.SetActive(false);
-        }
-
-        for (int i = 0; i < connections.Length; i++)
-        {
             DataStreamReader stream;
             NetworkEvent.Type cmd;
 
@@ -90,28 +80,18 @@ public class RelayServer : MonoBehaviour
                 if (cmd == NetworkEvent.Type.Data)
                 {
                     byte msgType = stream.ReadByte();
-                    if (msgType == 1) _colorsHandler.ShowColors(stream.ReadFixedString128().ToString(), _wordToGuess);
+                    if (msgType == 1) _colorsHandler.ShowColors(stream.ReadFixedString128().ToString(), WordToGuess);
                 }
 
                 else if (cmd == NetworkEvent.Type.Disconnect) connections[i] = default;
             }
         }
-    }
 
-    public void SendGuess(TMP_InputField input)
-    {
-        for (int i = 0; i < Connections.Length; i++)
+        NetworkConnection conn;
+        while ((conn = Driver.Accept()) != default)
         {
-            if (!Connections[i].IsCreated) continue;
-
-            DataStreamWriter writer;
-            Driver.BeginSend(Connections[i], out writer);
-
-            writer.WriteByte(1);
-            writer.WriteFixedString128(input.text);
-
-            Driver.EndSend(writer);
-            _wordToGuess = input.text;
+            connections.Add(conn);
+            _waitPanel.SetActive(false);
         }
     }
 

@@ -17,7 +17,6 @@ public class GetColorsHandler : MonoBehaviour
 
     private void Update()
     {
-
         if (_hasPendingUIUpdate)
         {
             _hasPendingUIUpdate = false;
