@@ -942,7 +942,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You won !
+  m_text: Guesser won !
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1313,7 +1313,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!224 &238313117
 RectTransform:
@@ -1887,6 +1887,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpdateGuessColors
   _guessContainer: {fileID: 1878462593}
+  _wonUi: {fileID: 238313116}
+  _client: {fileID: 570737833}
 --- !u!1 &288583160
 GameObject:
   m_ObjectHideFlags: 0
@@ -4934,7 +4936,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelayClient
   _guessColors: {fileID: 1363511968}
   _clientUI: {fileID: 1255512110}
-  _wonUi: {fileID: 238313116}
   <GuessPanel>k__BackingField: {fileID: 665103843}
 --- !u!114 &570737834
 MonoBehaviour:
@@ -10088,6 +10089,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpdateGuessColors
   _guessContainer: {fileID: 1553494962}
+  _wonUi: {fileID: 238313116}
+  _client: {fileID: 570737833}
 --- !u!4 &1363511969
 Transform:
   m_ObjectHideFlags: 0
@@ -13694,7 +13697,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Your friend is choosing their word...
+  m_text: Your friend is searching for a word...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

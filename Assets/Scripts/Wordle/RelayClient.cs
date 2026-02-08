@@ -17,8 +17,6 @@ public class RelayClient : MonoBehaviour
 
     [SerializeField]
     private Canvas _clientUI;
-    [SerializeField]
-    private Canvas _wonUi;
     [field:SerializeField]
     public GameObject GuessPanel { get; private set; }
 
@@ -26,7 +24,7 @@ public class RelayClient : MonoBehaviour
     private NetworkConnection connection;
 
     private bool isRunning = false;
-    public bool EndGame { get; private set; } = false;
+    public bool EndGame { get; set; } = false;
     private int _currentTry = -1;
     private string _wordToGuess = "";
 
@@ -118,18 +116,6 @@ public class RelayClient : MonoBehaviour
                     _guessColors.UpdateColors(colors, _currentTry);
                     return;
 
-                }
-
-                if(msgType == 4)
-                {
-                    string wonMsg = stream.ReadFixedString128().ToString();
-                    if (wonMsg == "Won")
-                    {
-                        _guessColors.UpdateColors("GGGGG", _currentTry);
-                        Debug.Log("Won! ");
-                        _wonUi.gameObject.SetActive(true);
-                        EndGame = true;
-                    }
                 }
             }
             else if (cmd == NetworkEvent.Type.Disconnect)

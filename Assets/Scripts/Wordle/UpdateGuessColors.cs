@@ -8,7 +8,11 @@ public class UpdateGuessColors : MonoBehaviour
 {
     [SerializeField]
     private GameObject _guessContainer;
+    [SerializeField]
+    private Canvas _wonUi;
     public List<Word> Lines { get; private set; } = new();
+    [SerializeField]
+    private RelayClient _client;
 
     private void Awake()
     {
@@ -34,6 +38,12 @@ public class UpdateGuessColors : MonoBehaviour
 
     public void UpdateColors(string colors, int line)
     {
+        if(colors == "GGGGG")
+        {
+            _wonUi.gameObject.SetActive(true);
+            _client.EndGame = true;
+        }
+
         print(colors + " on line " + line);
         for (int i = 0; i < colors.Length; i++)
         {
