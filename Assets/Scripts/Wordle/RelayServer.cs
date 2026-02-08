@@ -15,22 +15,20 @@ public class RelayServer : MonoBehaviour
 
     [SerializeField] private Canvas _hostUi;
     [SerializeField] private GameObject _waitPanel;
-    [SerializeField] private UpdateGuessColors _guessColors;
 
-    private NetworkDriver driver;
+    public NetworkDriver Driver { get; set; }
+    public NativeList<NetworkConnection> Connections => connections;
+
     private NativeList<NetworkConnection> connections;
-    private int _currentTry = -1;
+    private GetColorsHandler _colorsHandler;
     private string _wordToGuess;
-
     private bool isRunning = false;
-    private bool _hasPendingUIUpdate;
-    private string _pendingWord;
-    private string _pendingColors;
-    private int _pendingTry;
 
     async void Awake()
     {
         await Task.Yield();
+
+        TryGetComponent(out _colorsHandler);
 
         Application.runInBackground = true;
         await UnityServices.InitializeAsync();
@@ -42,52 +40,30 @@ public class RelayServer : MonoBehaviour
     public async void StartServer()
     {
         if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
         if (isRunning) return;
 
         Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
         JoinCode.text = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
         RelayServerData relayData = allocation.ToRelayServerData("dtls");
-
         NetworkSettings settings = new NetworkSettings();
         settings.WithRelayParameters(ref relayData);
 
-        driver = NetworkDriver.Create(settings);
-
+        Driver = NetworkDriver.Create(settings);
         connections = new NativeList<NetworkConnection>(2, Allocator.Persistent);
 
-        driver.Bind(NetworkEndpoint.AnyIpv4);
-        driver.Listen();
+        Driver.Bind(NetworkEndpoint.AnyIpv4);
+        Driver.Listen();
 
         isRunning = true;
-
         _hostUi.gameObject.SetActive(true);
     }
 
-    void Update()
+    private void Update()
     {
         if (!isRunning) return;
+        Driver.ScheduleUpdate().Complete();
 
-        driver.ScheduleUpdate().Complete();
-
-        CleanupConnections();
-        AcceptConnections();
-        ReceiveMessages();
-
-        if (_hasPendingUIUpdate)
-        {
-            _hasPendingUIUpdate = false;
-
-            for (int j = 0; j < _pendingWord.Length; j++) _guessColors.Lines[_pendingTry].Tmps[j].text = _pendingWord[j].ToString();
-
-            _guessColors.UpdateColors(_pendingColors, _pendingTry);
-        }
-    }
-
-
-    void CleanupConnections()
-    {
         for (int i = 0; i < connections.Length; i++)
         {
             if (!connections[i].IsCreated)
@@ -96,31 +72,25 @@ public class RelayServer : MonoBehaviour
                 i--;
             }
         }
-    }
 
-    void AcceptConnections()
-    {
         NetworkConnection conn;
-        while ((conn = driver.Accept()) != default)
+        while ((conn = Driver.Accept()) != default)
         {
             connections.Add(conn);
             _waitPanel.SetActive(false);
         }
-    }
 
-    void ReceiveMessages()
-    {
         for (int i = 0; i < connections.Length; i++)
         {
             DataStreamReader stream;
             NetworkEvent.Type cmd;
 
-            while ((cmd = driver.PopEventForConnection(connections[i], out stream)) != NetworkEvent.Type.Empty)
+            while ((cmd = Driver.PopEventForConnection(connections[i], out stream)) != NetworkEvent.Type.Empty)
             {
                 if (cmd == NetworkEvent.Type.Data)
                 {
                     byte msgType = stream.ReadByte();
-                    if (msgType == 1) ShowColors(stream.ReadFixedString128().ToString());
+                    if (msgType == 1) _colorsHandler.ShowColors(stream.ReadFixedString128().ToString(), _wordToGuess);
                 }
 
                 else if (cmd == NetworkEvent.Type.Disconnect) connections[i] = default;
@@ -128,58 +98,26 @@ public class RelayServer : MonoBehaviour
         }
     }
 
-    void ShowColors(string word)
-    {
-        _currentTry++;
-
-        string colors = "";
-        foreach (char c in word)
-        {
-            if (c == _wordToGuess[word.IndexOf(c)]) colors += "G";
-            else if (_wordToGuess.Contains(c)) colors += "Y";
-            else colors += "R";
-        }
-
-        _pendingWord = word;
-        _pendingColors = colors;
-        _pendingTry = _currentTry;
-        _hasPendingUIUpdate = true;
-
-        for (int i = 0; i < connections.Length; i++)
-        {
-            if (!connections[i].IsCreated) continue;
-
-            DataStreamWriter writer;
-            driver.BeginSend(connections[i], out writer);
-
-            writer.WriteByte(2);
-            writer.WriteFixedString128(colors);
-
-            driver.EndSend(writer);
-        }
-    }
-
-
     public void SendGuess(TMP_InputField input)
     {
-        for (int i = 0; i < connections.Length; i++)
+        for (int i = 0; i < Connections.Length; i++)
         {
-            if (!connections[i].IsCreated) continue;
+            if (!Connections[i].IsCreated) continue;
 
             DataStreamWriter writer;
-            driver.BeginSend(connections[i], out writer);
+            Driver.BeginSend(Connections[i], out writer);
 
             writer.WriteByte(1);
             writer.WriteFixedString128(input.text);
 
-            driver.EndSend(writer);
+            Driver.EndSend(writer);
             _wordToGuess = input.text;
         }
     }
 
     private void OnDestroy()
     {
-        if (driver.IsCreated) driver.Dispose();
-        if (connections.IsCreated) connections.Dispose();
+        if (Driver.IsCreated) Driver.Dispose();
+        if (Connections.IsCreated) Connections.Dispose();
     }
 }

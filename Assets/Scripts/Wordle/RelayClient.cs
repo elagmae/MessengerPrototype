@@ -28,9 +28,7 @@ public class RelayClient : MonoBehaviour
     async void Awake()
     {
         await Task.Yield();
-
         Application.runInBackground = true;
-
         await UnityServices.InitializeAsync();
 
         DontDestroyOnLoad(gameObject);

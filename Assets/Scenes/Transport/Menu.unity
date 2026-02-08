@@ -5232,6 +5232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 600485680}
   - component: {fileID: 600485679}
+  - component: {fileID: 600485681}
   m_Layer: 0
   m_Name: ServerHandler
   m_TagString: Untagged
@@ -5254,7 +5255,6 @@ MonoBehaviour:
   <JoinCode>k__BackingField: {fileID: 1443019545}
   _hostUi: {fileID: 370100447}
   _waitPanel: {fileID: 2068665128}
-  _guessColors: {fileID: 287470823}
 --- !u!4 &600485680
 Transform:
   m_ObjectHideFlags: 0
@@ -5271,6 +5271,19 @@ Transform:
   - {fileID: 370100444}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &600485681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600485678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa11dc45565aafd4bb4609c2faa710cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GetColorsHandler
+  _guessColors: {fileID: 287470823}
 --- !u!1 &620294883
 GameObject:
   m_ObjectHideFlags: 0
