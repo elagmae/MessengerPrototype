@@ -16,6 +16,7 @@ public class UpdateGuessColors : MonoBehaviour
 
     private void Awake()
     {
+        // Gets all the components needed to fill colors and texts (could have been done in editor, but saved me some time).
         HorizontalLayoutGroup[] lines = _guessContainer.GetComponentsInChildren<HorizontalLayoutGroup>();
         foreach(HorizontalLayoutGroup line in lines)
         {
@@ -38,13 +39,15 @@ public class UpdateGuessColors : MonoBehaviour
 
     public void UpdateColors(string colors, int line)
     {
-        if(colors == "GGGGG")
+        if (line > 4) return;
+
+        if(colors == "GGGGG") // if the word is the right one, we show the victory panel.
         {
             _wonUi.gameObject.SetActive(true);
             _client.EndGame = true;
         }
 
-        for (int i = 0; i < colors.Length; i++)
+        for (int i = 0; i < colors.Length; i++) // We read the answer provided by the host : R = red, Y = yellow, G = green.
         {
             Color color = Color.white;
             switch (colors[i])

@@ -10,10 +10,10 @@ public class InputLetterVerification : MonoBehaviour
 
     void FilterInput(string value)
     {
-        // Garde uniquement les lettres A-Z (sans accents)
+        // Only allows letters from A to Z.
         string filtered = Regex.Replace(value, "[^a-zA-Z]", "");
 
-        // Force majuscule (optionnel)
+        // Forces upper case.
         filtered = filtered.ToUpper();
 
         if (filtered != value)

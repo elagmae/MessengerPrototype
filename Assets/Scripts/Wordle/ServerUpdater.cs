@@ -28,7 +28,7 @@ public class ServerUpdater : MonoBehaviour
 
     private void Update()
     {
-        if (_hostStarter == null || !_hostStarter.IsRunning) return;
+        if (_hostStarter == null || !_hostStarter.IsRunning) return; // If a host is connected.
         _hostStarter.Driver.ScheduleUpdate().Complete();
 
         for (int i = 0; i < _hostStarter.Connections.Length; i++)
@@ -47,6 +47,8 @@ public class ServerUpdater : MonoBehaviour
                 if (cmd == NetworkEvent.Type.Data)
                 {
                     byte msgType = stream.ReadByte();
+
+                    // Show right colors when a client sends a guess, comapring it to the word chosen by the host.
                     if (msgType == 1) _colorsHandler.ShowColors(stream.ReadFixedString128().ToString(), WordToGuess);
                 }
 

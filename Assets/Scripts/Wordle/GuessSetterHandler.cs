@@ -15,10 +15,11 @@ public class GuessSetterHandler : MonoBehaviour
 
     public void SendGuess(TMP_InputField input)
     {
-        for (int i = 0; i < _server.Connections.Length; i++)
+        for (int i = 0; i < _server.Connections.Length; i++) // For all client connections.
         {
-            if (!_server.Connections[i].IsCreated) continue;
-
+            if (!_server.Connections[i].IsCreated) continue; // If it's not created already, we avoid it.
+            
+            // We send the client's guess to the server.
             DataStreamWriter writer;
             _server.Driver.BeginSend(_server.Connections[i], out writer);
 

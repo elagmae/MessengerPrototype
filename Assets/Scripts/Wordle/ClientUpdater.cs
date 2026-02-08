@@ -44,7 +44,10 @@ public class ClientUpdater : MonoBehaviour
             {
                 byte msgType = stream.ReadByte();
 
+                // 1 = Word to guess from the host.
                 if (msgType == 1) _wordToGuess = stream.ReadFixedString128().ToString();
+
+                // 2 = Response from the client's guess (if the letters are green, yellor, or red).
                 if (msgType == 2) _checker.GuessColors.UpdateColors(stream.ReadFixedString128().ToString(), _checker.CurrentTry);
             }
 

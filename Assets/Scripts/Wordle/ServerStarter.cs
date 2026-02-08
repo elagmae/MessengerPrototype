@@ -19,18 +19,21 @@ public class ServerStarter : MonoBehaviour
 
     private void Awake() => DontDestroyOnLoad(_hostUi.gameObject);
 
-    public async void StartServer()
+    public async void StartServer() // Creates a room and starts a host using Relay.
     {
         if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        if (IsRunning) return;
+        if (IsRunning) return; // If the host is already connected, we stop the method.
 
+        // Creates the room.
         Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
         JoinCode.text = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
+        // References the room's settings.
         RelayServerData relayData = allocation.ToRelayServerData("dtls");
         NetworkSettings settings = new NetworkSettings();
         settings.WithRelayParameters(ref relayData);
 
+        // Allows potential new connections.
         Driver = NetworkDriver.Create(settings);
         Connections = new NativeList<NetworkConnection>(2, Allocator.Persistent);
 

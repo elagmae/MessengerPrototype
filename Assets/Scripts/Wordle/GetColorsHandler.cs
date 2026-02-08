@@ -16,7 +16,7 @@ public class GetColorsHandler : MonoBehaviour
 
     private void Update()
     {
-        if (_hasPendingUIUpdate)
+        if (_hasPendingUIUpdate) // When UI needs an update, we update it.
         {
             _hasPendingUIUpdate = false;
             for (int j = 0; j < _pendingWord.Length; j++) _guessColors.Lines[_pendingTry].Tmps[j].text = _pendingWord[j].ToString();
@@ -28,12 +28,14 @@ public class GetColorsHandler : MonoBehaviour
     {
         _currentTry++;
 
+        if (_currentTry > 4) return;
+
         string colors = "";
         for(int i  = 0; i < word.Length; i++)
         {
-            if (wordToGuess[i] == word[i]) colors += "G";
-            else if (wordToGuess.Contains(word[i])) colors += "Y";
-            else colors += "R";
+            if (wordToGuess[i] == word[i]) colors += "G"; // If the letter is well placed, it's green.
+            else if (wordToGuess.Contains(word[i])) colors += "Y"; // If the word contains the letter, but it's wrongly placed, it's yellow.
+            else colors += "R"; // If the letter isn't in the word, it's red.
         }
 
         _pendingWord = word;
@@ -45,6 +47,7 @@ public class GetColorsHandler : MonoBehaviour
         {
             if (!_server.Connections[i].IsCreated) continue;
 
+            // We send the answer to the client.
             DataStreamWriter writer;
             _server.Driver.BeginSend(_server.Connections[i], out writer);
 

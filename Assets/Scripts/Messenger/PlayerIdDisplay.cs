@@ -9,6 +9,6 @@ public class PlayerIdDisplay : MonoBehaviour
     private void Awake()
     {
         TryGetComponent(out _nameDisplay);
-        _nameDisplay.text = $"Player {NetworkManager.Singleton.LocalClientId}";
+        _nameDisplay.text = $"Player {NetworkManager.Singleton.LocalClientId}"; // Update player name display.
     }
 }

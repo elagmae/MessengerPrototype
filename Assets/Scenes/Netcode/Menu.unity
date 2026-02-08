@@ -1212,7 +1212,6 @@ GameObject:
   - component: {fileID: 828472608}
   - component: {fileID: 828472607}
   - component: {fileID: 828472609}
-  - component: {fileID: 828472610}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -1318,18 +1317,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe2c82bc38374f044981d892c06befd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelayConnectionHandler
---- !u!114 &828472610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 828472605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 162ede8ee0fb9bb41b9709f2a99c019d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MessageDisplayHandler
 --- !u!1 &993436375
 GameObject:
   m_ObjectHideFlags: 0

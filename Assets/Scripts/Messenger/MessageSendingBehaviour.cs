@@ -15,7 +15,7 @@ public class MessageSendingBehaviour : NetworkBehaviour
         NetworkManager.SceneManager.OnSceneEvent += OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(SceneEvent sceneEvent)
+    private void OnSceneLoaded(SceneEvent sceneEvent) // If the game scene is load, find the components needed.
     {
         if (sceneEvent.SceneEventType != SceneEventType.SynchronizeComplete && sceneEvent.Scene.name != "Game") return;
         if (ScrollRect != null && _messageField != null) return;
@@ -24,7 +24,7 @@ public class MessageSendingBehaviour : NetworkBehaviour
         _messageField = FindFirstObjectByType<TMP_InputField>();
     }
 
-    public void ResetInput()
+    public void ResetInput() // Everytime the player sends the message, we empty their input and allow them to type again.
     {
         _messageField.text = "";
         _messageField.Select();
@@ -33,22 +33,23 @@ public class MessageSendingBehaviour : NetworkBehaviour
 
     private void Update()
     {
+        // Everytime the player uses the enter key, he sends a message containing his text input.
         if (Input.GetKeyDown(KeyCode.Return)) SendMessageToServerRpc(_messageField.text);
     }
 
-    [ServerRpc]
+    [ServerRpc] // We first send the message to the server.
     private void SendMessageToServerRpc(string message, ServerRpcParams rpcParams = default)
     {
         ulong senderClientId = rpcParams.Receive.SenderClientId;
-        ReceiveMessageClientRpc(message, senderClientId);
+        ReceiveMessageClientRpc(message, senderClientId); // We then provide the messages to every client.
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    public void ReceiveMessageClientRpc(string message, ulong senderClientId)
+    public void ReceiveMessageClientRpc(string message, ulong senderClientId) // Spawn message prefab and update its values.
     {
         Canvas.ForceUpdateCanvases();
-
-        MessageReceiveBehaviour lastMessage = Instantiate(_receiverPrefab, ScrollRect.content);
+        
+        MessageReceiveBehaviour lastMessage = Instantiate(_receiverPrefab, ScrollRect.content); 
 
         ScrollRect.content.SetSizeWithCurrentAnchors
         (

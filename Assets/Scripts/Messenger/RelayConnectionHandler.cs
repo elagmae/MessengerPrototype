@@ -20,7 +20,7 @@ public class RelayConnectionHandler : MonoBehaviour
         if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    public async void CreateRelay(int maxConnections)
+    public async void CreateRelay(int maxConnections) // Creates a room for players to join using relay, starts a host.
     {
         try
         {
@@ -42,7 +42,7 @@ public class RelayConnectionHandler : MonoBehaviour
         }
     }
 
-    public async void JoinRelay(TMP_InputField joinCodeInput)
+    public async void JoinRelay(TMP_InputField joinCodeInput) // Allows a player to join a room depending on its join code using relay.
     {
         try
         {
