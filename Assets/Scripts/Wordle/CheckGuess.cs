@@ -1,31 +1,28 @@
 using TMPro;
 using Unity.Collections;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 
 public class CheckGuess : MonoBehaviour
 {
     [field: SerializeField] public UpdateGuessColors GuessColors { get; private set; }
+
     public int CurrentTry { get; private set; } = -1;
 
     [SerializeField] private TMP_InputField _guessInput;
 
-    private RelayClient _client;
+    private ClientStarter _client;
+    private ClientUpdater _updater;
 
     private void Awake()
     {
         TryGetComponent(out _client);
+        TryGetComponent(out _updater);
     }
 
     private void Update()
     {
-        if (!Input.GetKeyUp(KeyCode.Return) || !_client.GuessPanel.activeInHierarchy || _client.EndGame) return;
-
-        if (_guessInput.text.Length < 5)
-        {
-            Debug.Log("Not enough letters. Should be a five letter word !");
-            return;
-        }
+        if (!Input.GetKeyUp(KeyCode.Return) || !_updater.GuessPanel.activeInHierarchy || _updater.EndGame) return;
+        if (_guessInput.text.Length < 5) return;
 
         SendMessageToServer(_guessInput.text);
     }

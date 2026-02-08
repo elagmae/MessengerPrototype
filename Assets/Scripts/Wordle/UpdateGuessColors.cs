@@ -12,7 +12,7 @@ public class UpdateGuessColors : MonoBehaviour
     private Canvas _wonUi;
     public List<Word> Lines { get; private set; } = new();
     [SerializeField]
-    private RelayClient _client;
+    private ClientUpdater _client;
 
     private void Awake()
     {

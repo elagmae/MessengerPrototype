@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class GuessSetterHandler : MonoBehaviour
 {
-    private RelayServer _server;
+    private ServerStarter _server;
+    private ServerUpdater _updater;
 
-    private void Awake() => TryGetComponent(out _server);
+    private void Awake()
+    {
+        TryGetComponent(out _server);
+        TryGetComponent(out _updater);
+    }
 
     public void SendGuess(TMP_InputField input)
     {
@@ -21,7 +26,7 @@ public class GuessSetterHandler : MonoBehaviour
             writer.WriteFixedString128(input.text);
 
             _server.Driver.EndSend(writer);
-            _server.WordToGuess = input.text;
+            _updater.WordToGuess = input.text;
         }
     }
 }

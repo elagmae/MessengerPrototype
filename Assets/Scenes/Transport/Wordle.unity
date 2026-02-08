@@ -202,8 +202,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 570737833}
-        m_TargetAssemblyTypeName: RelayClient, Assembly-CSharp
+      - m_Target: {fileID: 570737836}
+        m_TargetAssemblyTypeName: ClientStarter, Assembly-CSharp
         m_MethodName: StartClient
         m_Mode: 2
         m_Arguments:
@@ -1888,7 +1888,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpdateGuessColors
   _guessContainer: {fileID: 1878462593}
   _wonUi: {fileID: 238313116}
-  _client: {fileID: 570737833}
+  _client: {fileID: 570737835}
 --- !u!1 &288583160
 GameObject:
   m_ObjectHideFlags: 0
@@ -4897,8 +4897,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 570737832}
-  - component: {fileID: 570737833}
   - component: {fileID: 570737834}
+  - component: {fileID: 570737835}
+  - component: {fileID: 570737836}
   m_Layer: 0
   m_Name: ClientHandler
   m_TagString: Untagged
@@ -4922,20 +4923,6 @@ Transform:
   - {fileID: 1255512111}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &570737833
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 570737831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 934c6ab6ebc11c248b5fcc9c2cfae09c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RelayClient
-  <GuessPanel>k__BackingField: {fileID: 665103843}
-  _clientUI: {fileID: 1255512110}
 --- !u!114 &570737834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4950,6 +4937,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CheckGuess
   <GuessColors>k__BackingField: {fileID: 1363511968}
   _guessInput: {fileID: 977564507}
+--- !u!114 &570737835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570737831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa072f495a67d3341920ed2c7e00ce11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClientUpdater
+  <GuessPanel>k__BackingField: {fileID: 665103843}
+--- !u!114 &570737836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 570737831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da7597c0190746a47b3ee9a2a1ac3f9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClientStarter
+  _clientUI: {fileID: 1255512110}
 --- !u!1 &577291779
 GameObject:
   m_ObjectHideFlags: 0
@@ -5231,9 +5244,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 600485680}
-  - component: {fileID: 600485679}
   - component: {fileID: 600485681}
   - component: {fileID: 600485682}
+  - component: {fileID: 600485683}
+  - component: {fileID: 600485684}
   m_Layer: 0
   m_Name: ServerHandler
   m_TagString: Untagged
@@ -5241,21 +5255,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &600485679
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 600485678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 481f741f636c1824b87c4efbcaff27af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RelayServer
-  <JoinCode>k__BackingField: {fileID: 1443019545}
-  _hostUi: {fileID: 370100447}
-  _waitPanel: {fileID: 2068665128}
 --- !u!4 &600485680
 Transform:
   m_ObjectHideFlags: 0
@@ -5297,6 +5296,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e00512118acde14f8d2e7c8c05017f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuessSetterHandler
+--- !u!114 &600485683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600485678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71463a27556bf8a439c31593acad4bb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ServerStarter
+  <JoinCode>k__BackingField: {fileID: 1443019545}
+  _hostUi: {fileID: 370100447}
+--- !u!114 &600485684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600485678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e8061e5667598b4c9d49020643cad25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ServerUpdater
+  _waitPanel: {fileID: 2068665128}
 --- !u!1 &620294883
 GameObject:
   m_ObjectHideFlags: 0
@@ -10116,7 +10142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpdateGuessColors
   _guessContainer: {fileID: 1553494962}
   _wonUi: {fileID: 238313116}
-  _client: {fileID: 570737833}
+  _client: {fileID: 570737835}
 --- !u!4 &1363511969
 Transform:
   m_ObjectHideFlags: 0
@@ -11205,8 +11231,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 600485679}
-        m_TargetAssemblyTypeName: RelayServer, Assembly-CSharp
+      - m_Target: {fileID: 600485683}
+        m_TargetAssemblyTypeName: ServerStarter, Assembly-CSharp
         m_MethodName: StartServer
         m_Mode: 1
         m_Arguments:

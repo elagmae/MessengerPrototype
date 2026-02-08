@@ -5,7 +5,7 @@ public class GetColorsHandler : MonoBehaviour
 {
     [SerializeField] private UpdateGuessColors _guessColors;
 
-    private RelayServer _server;
+    private ServerStarter _server;
     private bool _hasPendingUIUpdate;
     private string _pendingWord;
     private string _pendingColors;
