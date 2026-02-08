@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Collections;
@@ -18,6 +17,8 @@ public class RelayClient : MonoBehaviour
 
     [SerializeField]
     private Canvas _clientUI;
+    [SerializeField]
+    private Canvas _wonUi;
     [field:SerializeField]
     public GameObject GuessPanel { get; private set; }
 
@@ -27,9 +28,11 @@ public class RelayClient : MonoBehaviour
     private bool isRunning = false;
     public bool EndGame { get; private set; } = false;
     private int _currentTry = -1;
+    private string _wordToGuess = "";
 
     async void Awake()
     {
+        Application.runInBackground = true;
         await InitUnityServices();
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(_clientUI.gameObject);
@@ -74,7 +77,7 @@ public class RelayClient : MonoBehaviour
 
         driver = NetworkDriver.Create(settings);
 
-        connection = driver.Connect(NetworkEndpoint.AnyIpv4);
+        connection = driver.Connect(relayData.Endpoint);
 
         isRunning = true;
         DisplayUi();
@@ -83,6 +86,8 @@ public class RelayClient : MonoBehaviour
     void Update()
     {
         if (!isRunning || EndGame) return;
+
+        if(_wordToGuess != "") GuessPanel.SetActive(true);
 
         driver.ScheduleUpdate().Complete();
 
@@ -103,8 +108,7 @@ public class RelayClient : MonoBehaviour
 
                 if (msgType == 1)
                 {
-                    FixedString128Bytes wordToGuess = stream.ReadFixedString128();
-                    GuessPanel.SetActive(true);
+                    _wordToGuess = stream.ReadFixedString128().ToString();
                 }
 
                 if (msgType == 2 || msgType == 3)
@@ -123,6 +127,7 @@ public class RelayClient : MonoBehaviour
                     {
                         _guessColors.UpdateColors("GGGGG", _currentTry);
                         Debug.Log("Won! ");
+                        _wonUi.gameObject.SetActive(true);
                         EndGame = true;
                     }
                 }

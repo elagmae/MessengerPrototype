@@ -9,12 +9,13 @@ using Unity.Services.Core;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class RelayServer : MonoBehaviour
 {
     [SerializeField]
     private Canvas _hostUi;
+    [SerializeField]
+    private GameObject _waitPanel;
     [SerializeField]
     private UpdateGuessColors _guessColors;
 
@@ -28,8 +29,14 @@ public class RelayServer : MonoBehaviour
 
     private bool isRunning = false;
 
+    private bool _hasPendingUIUpdate;
+    private string _pendingWord;
+    private string _pendingColors;
+    private int _pendingTry;
+
     async void Awake()
     {
+        Application.runInBackground = true;
         await InitUnityServices();
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(_hostUi.gameObject);
@@ -93,7 +100,20 @@ public class RelayServer : MonoBehaviour
         CleanupConnections();
         AcceptConnections();
         ReceiveMessages();
+
+        if (_hasPendingUIUpdate)
+        {
+            _hasPendingUIUpdate = false;
+
+            for (int j = 0; j < _pendingWord.Length; j++)
+            {
+                _guessColors.Lines[_pendingTry].Tmps[j].text = _pendingWord[j].ToString();
+            }
+
+            _guessColors.UpdateColors(_pendingColors, _pendingTry);
+        }
     }
+
 
     void CleanupConnections()
     {
@@ -113,6 +133,7 @@ public class RelayServer : MonoBehaviour
         while ((conn = driver.Accept()) != default)
         {
             connections.Add(conn);
+            _waitPanel.SetActive(false);
         }
     }
 
@@ -147,6 +168,20 @@ public class RelayServer : MonoBehaviour
     void ShowColors(string word)
     {
         _currentTry++;
+
+        string colors = "";
+        foreach (char c in word)
+        {
+            if (c == _wordToGuess[word.IndexOf(c)]) colors += "G";
+            else if (_wordToGuess.Contains(c)) colors += "Y";
+            else colors += "R";
+        }
+
+        _pendingWord = word;
+        _pendingColors = colors;
+        _pendingTry = _currentTry;
+        _hasPendingUIUpdate = true;
+
         for (int i = 0; i < connections.Length; i++)
         {
             if (!connections[i].IsCreated) continue;
@@ -154,36 +189,16 @@ public class RelayServer : MonoBehaviour
             DataStreamWriter writer;
             driver.BeginSend(connections[i], out writer);
 
-            if (word == _wordToGuess)
-            {
-                writer.WriteByte(4);
-                writer.WriteFixedString128("Won");
-            }
-
-            string colors = "";
-            foreach (char c in word)
-            {
-                if (c == _wordToGuess[word.IndexOf(c)]) colors += "G";
-                else if (_wordToGuess.Contains(c)) colors += "Y";
-                else if (!_wordToGuess.Contains(c)) colors += "R";
-            }
-
-            for (int j = 0; j < word.Length;j++)
-            {
-                _guessColors.Lines[_currentTry].Tmps[j].text = word[j].ToString();
-            }
-
             writer.WriteByte(2);
             writer.WriteFixedString128(colors);
 
             writer.WriteByte(3);
             writer.WriteInt(_currentTry);
 
-            _guessColors.UpdateColors(colors, _currentTry);
-
             driver.EndSend(writer);
         }
     }
+
 
     public void SendGuess(TMP_InputField input)
     {
