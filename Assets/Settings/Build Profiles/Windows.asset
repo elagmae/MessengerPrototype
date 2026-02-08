@@ -22,6 +22,10 @@ MonoBehaviour:
   m_Scenes:
   - m_enabled: 1
     m_path: Assets/Scenes/Transport/Wordle.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Netcode/Menu.unity
+  - m_enabled: 1
+    m_path: Assets/Scenes/Netcode/Game.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings: []
