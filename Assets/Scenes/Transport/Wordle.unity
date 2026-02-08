@@ -4935,7 +4935,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelayClient
   <GuessPanel>k__BackingField: {fileID: 665103843}
-  _guessColors: {fileID: 1363511968}
   _clientUI: {fileID: 1255512110}
 --- !u!114 &570737834
 MonoBehaviour:
@@ -4949,6 +4948,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 132b49ec5592a914384412c01539c6f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckGuess
+  <GuessColors>k__BackingField: {fileID: 1363511968}
   _guessInput: {fileID: 977564507}
 --- !u!1 &577291779
 GameObject:
@@ -5297,7 +5297,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e00512118acde14f8d2e7c8c05017f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuessSetterHandler
-  _server: {fileID: 600485679}
 --- !u!1 &620294883
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,3 @@
-using TMPro;
 using Unity.Collections;
 using UnityEngine;
 
@@ -30,10 +29,10 @@ public class GetColorsHandler : MonoBehaviour
         _currentTry++;
 
         string colors = "";
-        foreach (char c in word)
+        for(int i  = 0; i < word.Length; i++)
         {
-            if (c == wordToGuess[word.IndexOf(c)]) colors += "G";
-            else if (wordToGuess.Contains(c)) colors += "Y";
+            if (wordToGuess[i] == word[i]) colors += "G";
+            else if (wordToGuess.Contains(word[i])) colors += "Y";
             else colors += "R";
         }
 

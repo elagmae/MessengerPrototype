@@ -13,22 +13,25 @@ public class RelayClient : MonoBehaviour
 {
     [field: SerializeField] public GameObject GuessPanel { get; private set; }
 
+    public NetworkDriver Driver {get;private set;}
+    public NetworkConnection Connection => connection;
     public bool EndGame { get; set; } = false;
 
-    [SerializeField] private UpdateGuessColors _guessColors;
     [SerializeField] private Canvas _clientUI;
 
-    private NetworkDriver driver;
+    private CheckGuess _checker;
     private NetworkConnection connection;
 
     private bool isRunning = false;
-    private int _currentTry = -1;
     private string _wordToGuess = "";
 
     async void Awake()
     {
         await Task.Yield();
+
         Application.runInBackground = true;
+        TryGetComponent(out _checker);
+
         await UnityServices.InitializeAsync();
 
         DontDestroyOnLoad(gameObject);
@@ -47,8 +50,8 @@ public class RelayClient : MonoBehaviour
         NetworkSettings settings = new NetworkSettings();
         settings.WithRelayParameters(ref relayData);
 
-        driver = NetworkDriver.Create(settings);
-        connection = driver.Connect(relayData.Endpoint);
+        Driver = NetworkDriver.Create(settings);
+        connection = Driver.Connect(relayData.Endpoint);
 
         isRunning = true;
         _clientUI.gameObject.SetActive(true);
@@ -60,44 +63,27 @@ public class RelayClient : MonoBehaviour
 
         if(_wordToGuess != "") GuessPanel.SetActive(true);
 
-        driver.ScheduleUpdate().Complete();
+        Driver.ScheduleUpdate().Complete();
 
         DataStreamReader stream;
         NetworkEvent.Type cmd;
 
-        while ((cmd = connection.PopEvent(driver, out stream)) != NetworkEvent.Type.Empty)
+        while ((cmd = connection.PopEvent(Driver, out stream)) != NetworkEvent.Type.Empty)
         {
             if (cmd == NetworkEvent.Type.Data)
             {
                 byte msgType = stream.ReadByte();
 
                 if (msgType == 1) _wordToGuess = stream.ReadFixedString128().ToString();
-                if (msgType == 2) _guessColors.UpdateColors(stream.ReadFixedString128().ToString(), _currentTry);
+                if (msgType == 2) _checker.GuessColors.UpdateColors(stream.ReadFixedString128().ToString(), _checker.CurrentTry);
             }
 
             else if (cmd == NetworkEvent.Type.Disconnect) connection = default;
         }
     }
 
-    public void SendMessageToServer(string message)
-    {
-        if (!connection.IsCreated) return;
-
-        _currentTry++;
-
-        DataStreamWriter writer;
-        driver.BeginSend(connection, out writer);
-
-        writer.WriteByte(1);
-        writer.WriteFixedString128(message);
-
-        for (int i = 0; i < message.Length; i++) _guessColors.Lines[_currentTry].Tmps[i].text = message[i].ToString();
-
-        driver.EndSend(writer);
-    }
-
     private void OnDestroy()
     {
-        if (driver.IsCreated) driver.Dispose();
+        if (Driver.IsCreated) Driver.Dispose();
     }
 }

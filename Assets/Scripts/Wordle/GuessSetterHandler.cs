@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class GuessSetterHandler : MonoBehaviour
 {
-    [SerializeField]
     private RelayServer _server;
+
+    private void Awake() => TryGetComponent(out _server);
 
     public void SendGuess(TMP_InputField input)
     {
