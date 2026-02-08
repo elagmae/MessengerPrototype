@@ -44,7 +44,6 @@ public class UpdateGuessColors : MonoBehaviour
             _client.EndGame = true;
         }
 
-        print(colors + " on line " + line);
         for (int i = 0; i < colors.Length; i++)
         {
             Color color = Color.white;

@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Collections;
@@ -12,73 +11,49 @@ using UnityEngine;
 
 public class RelayClient : MonoBehaviour
 {
-    [SerializeField]
-    private UpdateGuessColors _guessColors;
+    [field: SerializeField] public GameObject GuessPanel { get; private set; }
 
-    [SerializeField]
-    private Canvas _clientUI;
-    [field:SerializeField]
-    public GameObject GuessPanel { get; private set; }
+    public bool EndGame { get; set; } = false;
+
+    [SerializeField] private UpdateGuessColors _guessColors;
+    [SerializeField] private Canvas _clientUI;
 
     private NetworkDriver driver;
     private NetworkConnection connection;
 
     private bool isRunning = false;
-    public bool EndGame { get; set; } = false;
     private int _currentTry = -1;
     private string _wordToGuess = "";
 
     async void Awake()
     {
+        await Task.Yield();
+
         Application.runInBackground = true;
-        await InitUnityServices();
+
+        await UnityServices.InitializeAsync();
+
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(_clientUI.gameObject);
     }
 
-    private void DisplayUi()
-    {
-        _clientUI.gameObject.SetActive(true);
-    }
-
-    async Task InitUnityServices()
-    {
-        try
-        {
-            await UnityServices.InitializeAsync();
-
-            if (!AuthenticationService.Instance.IsSignedIn)
-            {
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                Debug.Log("Signed in anonymously (CLIENT): " + AuthenticationService.Instance.PlayerId);
-            }
-        }
-
-        catch (Exception _)
-        {
-        }
-
-    }
-
     public async void StartClient(TMP_InputField joinCodeInput)
     {
+        if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
         if (isRunning) return;
 
         JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCodeInput.text);
-
-        Debug.Log("CLIENT joined Relay.");
-
         RelayServerData relayData = joinAllocation.ToRelayServerData("dtls");
 
         NetworkSettings settings = new NetworkSettings();
         settings.WithRelayParameters(ref relayData);
 
         driver = NetworkDriver.Create(settings);
-
         connection = driver.Connect(relayData.Endpoint);
 
         isRunning = true;
-        DisplayUi();
+        _clientUI.gameObject.SetActive(true);
     }
 
     void Update()
@@ -94,35 +69,15 @@ public class RelayClient : MonoBehaviour
 
         while ((cmd = connection.PopEvent(driver, out stream)) != NetworkEvent.Type.Empty)
         {
-            if (cmd == NetworkEvent.Type.Connect)
-            {
-                Debug.Log("CLIENT connected to server !");
-            }
-            else if (cmd == NetworkEvent.Type.Data)
+            if (cmd == NetworkEvent.Type.Data)
             {
                 byte msgType = stream.ReadByte();
 
-                print(msgType);
-
-                if (msgType == 1)
-                {
-                    _wordToGuess = stream.ReadFixedString128().ToString();
-                }
-
-                if (msgType == 2 || msgType == 3)
-                {
-                    string colors = stream.ReadFixedString128().ToString();
-                    int line = stream.ReadInt();
-                    _guessColors.UpdateColors(colors, _currentTry);
-                    return;
-
-                }
+                if (msgType == 1) _wordToGuess = stream.ReadFixedString128().ToString();
+                if (msgType == 2) _guessColors.UpdateColors(stream.ReadFixedString128().ToString(), _currentTry);
             }
-            else if (cmd == NetworkEvent.Type.Disconnect)
-            {
-                Debug.Log("Disconnected from server.");
-                connection = default;
-            }
+
+            else if (cmd == NetworkEvent.Type.Disconnect) connection = default;
         }
     }
 
@@ -138,19 +93,13 @@ public class RelayClient : MonoBehaviour
         writer.WriteByte(1);
         writer.WriteFixedString128(message);
 
-        for (int i = 0; i < message.Length; i++)
-        {
-            _guessColors.Lines[_currentTry].Tmps[i].text = message[i].ToString();
-        }
+        for (int i = 0; i < message.Length; i++) _guessColors.Lines[_currentTry].Tmps[i].text = message[i].ToString();
 
         driver.EndSend(writer);
-
-        Debug.Log("CLIENT sent: " + message);
     }
 
     private void OnDestroy()
     {
-        if (driver.IsCreated)
-            driver.Dispose();
+        if (driver.IsCreated) driver.Dispose();
     }
 }

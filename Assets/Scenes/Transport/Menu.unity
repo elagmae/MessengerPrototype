@@ -4934,9 +4934,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 934c6ab6ebc11c248b5fcc9c2cfae09c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelayClient
+  <GuessPanel>k__BackingField: {fileID: 665103843}
   _guessColors: {fileID: 1363511968}
   _clientUI: {fileID: 1255512110}
-  <GuessPanel>k__BackingField: {fileID: 665103843}
 --- !u!114 &570737834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5251,10 +5251,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481f741f636c1824b87c4efbcaff27af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelayServer
+  <JoinCode>k__BackingField: {fileID: 1443019545}
   _hostUi: {fileID: 370100447}
   _waitPanel: {fileID: 2068665128}
   _guessColors: {fileID: 287470823}
-  joinCode: {fileID: 1443019545}
 --- !u!4 &600485680
 Transform:
   m_ObjectHideFlags: 0

@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Collections;
@@ -12,23 +11,18 @@ using UnityEngine;
 
 public class RelayServer : MonoBehaviour
 {
-    [SerializeField]
-    private Canvas _hostUi;
-    [SerializeField]
-    private GameObject _waitPanel;
-    [SerializeField]
-    private UpdateGuessColors _guessColors;
+    [field: SerializeField] public TextMeshProUGUI JoinCode { get; private set; }
+
+    [SerializeField] private Canvas _hostUi;
+    [SerializeField] private GameObject _waitPanel;
+    [SerializeField] private UpdateGuessColors _guessColors;
 
     private NetworkDriver driver;
     private NativeList<NetworkConnection> connections;
-    private AsyncOperation _loadOperation = new();
     private int _currentTry = -1;
     private string _wordToGuess;
 
-    public TextMeshProUGUI joinCode;
-
     private bool isRunning = false;
-
     private bool _hasPendingUIUpdate;
     private string _pendingWord;
     private string _pendingColors;
@@ -36,43 +30,23 @@ public class RelayServer : MonoBehaviour
 
     async void Awake()
     {
+        await Task.Yield();
+
         Application.runInBackground = true;
-        await InitUnityServices();
+        await UnityServices.InitializeAsync();
+
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(_hostUi.gameObject);
     }
 
-    private void DisplayUi()
-    {
-        _hostUi.gameObject.SetActive(true);
-    }
-
-    async Task InitUnityServices()
-    {
-        try
-        {
-            await UnityServices.InitializeAsync();
-
-            if (!AuthenticationService.Instance.IsSignedIn)
-            {
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                Debug.Log("Signed in anonymously (SERVER): " + AuthenticationService.Instance.PlayerId);
-            }
-        }
-
-        catch (Exception _)
-        {
-        }
-    }
-
     public async void StartServer()
     {
+        if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
         if (isRunning) return;
 
         Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
-        joinCode.text = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-
-        Debug.Log("SERVER started. JOIN CODE = " + joinCode);
+        JoinCode.text = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
         RelayServerData relayData = allocation.ToRelayServerData("dtls");
 
@@ -88,7 +62,7 @@ public class RelayServer : MonoBehaviour
 
         isRunning = true;
 
-        DisplayUi();
+        _hostUi.gameObject.SetActive(true);
     }
 
     void Update()
@@ -105,10 +79,7 @@ public class RelayServer : MonoBehaviour
         {
             _hasPendingUIUpdate = false;
 
-            for (int j = 0; j < _pendingWord.Length; j++)
-            {
-                _guessColors.Lines[_pendingTry].Tmps[j].text = _pendingWord[j].ToString();
-            }
+            for (int j = 0; j < _pendingWord.Length; j++) _guessColors.Lines[_pendingTry].Tmps[j].text = _pendingWord[j].ToString();
 
             _guessColors.UpdateColors(_pendingColors, _pendingTry);
         }
@@ -149,18 +120,10 @@ public class RelayServer : MonoBehaviour
                 if (cmd == NetworkEvent.Type.Data)
                 {
                     byte msgType = stream.ReadByte();
+                    if (msgType == 1) ShowColors(stream.ReadFixedString128().ToString());
+                }
 
-                    if (msgType == 1)
-                    {
-                        FixedString128Bytes msg = stream.ReadFixedString128();
-                        ShowColors(msg.ToString());
-                        return;
-                    }
-                }
-                else if (cmd == NetworkEvent.Type.Disconnect)
-                {
-                    connections[i] = default;
-                }
+                else if (cmd == NetworkEvent.Type.Disconnect) connections[i] = default;
             }
         }
     }
@@ -192,9 +155,6 @@ public class RelayServer : MonoBehaviour
             writer.WriteByte(2);
             writer.WriteFixedString128(colors);
 
-            writer.WriteByte(3);
-            writer.WriteInt(_currentTry);
-
             driver.EndSend(writer);
         }
     }
@@ -219,10 +179,7 @@ public class RelayServer : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (driver.IsCreated)
-            driver.Dispose();
-
-        if (connections.IsCreated)
-            connections.Dispose();
+        if (driver.IsCreated) driver.Dispose();
+        if (connections.IsCreated) connections.Dispose();
     }
 }
